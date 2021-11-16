@@ -1,4 +1,4 @@
-# cyber_ded_flutter
+# cyber_ded_flutter ![GH Pages](https://github.com/TepMex/cyber_ded_flutter/actions/workflows/publish.yaml/badge.svg)
 
 Cybersecurity trainer. Flutter source code.
 Only Russian language supported.
