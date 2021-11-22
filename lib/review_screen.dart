@@ -5,7 +5,9 @@ class ReviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("Экран ревью",
-        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold));
+    return const Center(
+      child: Text("Экран ревью",
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+    );
   }
 }

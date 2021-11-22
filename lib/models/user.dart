@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cyber_ded_flutter/models/lesson.dart';
 import 'package:cyber_ded_flutter/models/premium_key.dart';
 import 'package:cyber_ded_flutter/models/review.dart';
+import 'package:cyber_ded_flutter/models/statistics.dart';
 import 'package:cyber_ded_flutter/utils/user_model_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,11 +13,9 @@ class User {
   List<Lesson> lessons;
   List<Review> reviews;
   PremiumKey premiumKey;
+  Statistics stats;
 
-  User(this.lessons, this.reviews, this.premiumKey);
-  // static User copyOf(User userToCopy) {
-  //   return User(userToCopy.lessons, userToCopy.reviews, userToCopy.premiumKey);
-  // }
+  User(this.lessons, this.reviews, this.premiumKey, this.stats);
 
   User.fromJson(Map<String, dynamic> json)
       : lessons = (jsonDecode(json['lessons']) as List<dynamic>)
@@ -25,12 +24,14 @@ class User {
         reviews = (jsonDecode(json['reviews']) as List<dynamic>)
             .map((e) => Review.fromJson(e))
             .toList(),
-        premiumKey = PremiumKey.fromJson(jsonDecode(json['premiumKey']));
+        premiumKey = PremiumKey.fromJson(jsonDecode(json['premiumKey'])),
+        stats = Statistics.fromJson(jsonDecode(json['statistics']));
 
   Map<String, dynamic> toJson() => {
         'lessons': jsonEncode(lessons),
         'reviews': jsonEncode(reviews),
         'premiumKey': jsonEncode(premiumKey),
+        'statistics': jsonEncode(stats),
       };
 
   Future<void> savePersistent() async {

@@ -1,13 +1,14 @@
 import 'package:cyber_ded_flutter/models/review.dart';
 import 'package:cyber_ded_flutter/models/premium_key.dart';
 import 'package:cyber_ded_flutter/models/lesson.dart';
+import 'package:cyber_ded_flutter/models/statistics.dart';
 import 'package:cyber_ded_flutter/models/user.dart';
 
 class UserModelInitializer {
   UserModelInitializer(this._currentUser);
 
   static UserModelInitializer create() {
-    var currentUser = User([], [], PremiumKey(''));
+    var currentUser = User([], [], PremiumKey(''), Statistics([]));
     return UserModelInitializer(currentUser);
   }
 

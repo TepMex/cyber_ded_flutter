@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cyber_ded_flutter/models/lesson.dart';
 import 'package:cyber_ded_flutter/models/premium_key.dart';
 import 'package:cyber_ded_flutter/models/review.dart';
+import 'package:cyber_ded_flutter/models/statistics.dart';
 import 'package:cyber_ded_flutter/models/user.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -64,10 +65,10 @@ void main() {
 
   test('User fromJson', () {
     var jsonStr =
-        """{"lessons":"[{\\"id\\":1,\\"contentLink\\":\\"content/lessons/001.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"locked\\",\\"completeDate\\":\\"2021-12-01T05:32:01.000\\"},{\\"id\\":2,\\"contentLink\\":\\"content/lessons/002.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"completed\\",\\"completeDate\\":\\"2021-12-01T05:31:01.000\\"}]","reviews":"[{\\"id\\":3,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/003.json\\",\\"status\\":\\"apprentice\\",\\"nextReviewDate\\":\\"2021-12-21T05:30:01.000\\"},{\\"id\\":4,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/004.json\\",\\"status\\":\\"guru\\",\\"nextReviewDate\\":\\"2021-12-11T05:30:01.000\\"}]","premiumKey":"{\\"key\\":\\"test key\\"}"}""";
+        """{"lessons":"[{\\"id\\":1,\\"contentLink\\":\\"content/lessons/001.md\\",\\"isPremiumContent\\":false,\\"status\\":\\"locked\\",\\"completeDate\\":null}]","reviews":"[{\\"id\\":1,\\"lessonId\\":1,\\"contentLink\\":\\"content/reviews/001.json\\",\\"status\\":\\"locked\\",\\"nextReviewDate\\":null}]","premiumKey":"{\\"key\\":null}","statistics":"{\\"reviewStatistics\\":\\"[]\\"}"}""";
     var u = User.fromJson(jsonDecode(jsonStr));
 
-    expect(u.lessons.length, 2);
+    expect(u.lessons.length, 1);
   });
 
   test('User toJson serialization', () {
@@ -80,11 +81,11 @@ void main() {
     var l2 = Lesson(2, 'content/lessons/002.md', true, LessonStatus.completed,
         DateTime.parse('2021-12-01 05:31:01'));
     var u = User(List<Lesson>.from([l1, l2]), List<Review>.from([r1, r2]),
-        PremiumKey("test key"));
+        PremiumKey("test key"), Statistics([]));
 
     var jsonStr = jsonEncode(u);
     expect(jsonStr,
-        """{"lessons":"[{\\"id\\":1,\\"contentLink\\":\\"content/lessons/001.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"locked\\",\\"completeDate\\":\\"2021-12-01T05:32:01.000\\"},{\\"id\\":2,\\"contentLink\\":\\"content/lessons/002.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"completed\\",\\"completeDate\\":\\"2021-12-01T05:31:01.000\\"}]","reviews":"[{\\"id\\":3,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/003.json\\",\\"status\\":\\"apprentice\\",\\"nextReviewDate\\":\\"2021-12-21T05:30:01.000\\"},{\\"id\\":4,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/004.json\\",\\"status\\":\\"guru\\",\\"nextReviewDate\\":\\"2021-12-11T05:30:01.000\\"}]","premiumKey":"{\\"key\\":\\"test key\\"}"}""");
+        """{"lessons":"[{\\"id\\":1,\\"contentLink\\":\\"content/lessons/001.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"locked\\",\\"completeDate\\":\\"2021-12-01T05:32:01.000\\"},{\\"id\\":2,\\"contentLink\\":\\"content/lessons/002.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"completed\\",\\"completeDate\\":\\"2021-12-01T05:31:01.000\\"}]","reviews":"[{\\"id\\":3,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/003.json\\",\\"status\\":\\"apprentice\\",\\"nextReviewDate\\":\\"2021-12-21T05:30:01.000\\"},{\\"id\\":4,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/004.json\\",\\"status\\":\\"guru\\",\\"nextReviewDate\\":\\"2021-12-11T05:30:01.000\\"}]","premiumKey":"{\\"key\\":\\"test key\\"}","statistics":"{\\"reviewStatistics\\":\\"[]\\"}"}""");
   });
 
   test('Premium key validation', () {
