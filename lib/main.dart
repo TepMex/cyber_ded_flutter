@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'package:universal_html/html.dart' as html;
 
 import 'package:cyber_ded_flutter/home_screen.dart';
 import 'package:cyber_ded_flutter/lessons_screen.dart';
@@ -73,7 +73,7 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
   void initState() {
     super.initState();
     if (kIsWeb) {
-      window.onUnload.listen((event) {
+      html.window.onUnload.listen((event) {
         getUserModel().then((value) => value.savePersistent());
       });
     }
