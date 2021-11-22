@@ -25,7 +25,9 @@ class Lesson {
         contentLink = json['contentLink'],
         isPremiumContent = json['isPremiumContent'],
         status = LessonStatusSerializer.parse(json['status']),
-        completeDate = DateTime.parse(json['completeDate']);
+        completeDate = json['completeDate'] == null
+            ? null
+            : DateTime.tryParse(json['completeDate']);
 
   Map<String, dynamic> toJson() => {
         'id': id,

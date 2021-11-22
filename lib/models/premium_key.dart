@@ -1,5 +1,5 @@
 class PremiumKey {
-  final String? key;
+  String? key;
 
   PremiumKey(this.key);
 

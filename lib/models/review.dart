@@ -25,7 +25,9 @@ class Review {
         lessonId = json['lessonId'],
         contentLink = json['contentLink'],
         status = SRSStatusSerializer.parse(json['status']),
-        nextReviewDate = DateTime.parse(json['nextReviewDate']);
+        nextReviewDate = json['nextReviewDate'] == null
+            ? null
+            : DateTime.tryParse(json['nextReviewDate']);
 
   Map<String, dynamic> toJson() => {
         'id': id,

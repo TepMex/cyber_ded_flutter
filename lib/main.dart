@@ -4,9 +4,14 @@ import 'package:cyber_ded_flutter/home_screen.dart';
 import 'package:cyber_ded_flutter/lessons_screen.dart';
 import 'package:cyber_ded_flutter/payment_screen.dart';
 import 'package:cyber_ded_flutter/review_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'models/user.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const CyberDedApp());
 }
 
@@ -34,19 +39,57 @@ class CyberDedHomePage extends StatefulWidget {
   State<CyberDedHomePage> createState() => _CyberDedHomePageState();
 }
 
-class _CyberDedHomePageState extends State<CyberDedHomePage> {
-  static const List<Widget> _screens = <Widget>[
-    HomeScreen(),
-    LessonsScreen(),
-    ReviewScreen(),
-    PaymentScreen(),
-  ];
-  int _selectedIndex = 0;
+enum CyberDedScreen { home, lesson, review, payment }
+
+class _CyberDedHomePageState extends State<CyberDedHomePage>
+    with WidgetsBindingObserver {
+  User? userModel;
+  CyberDedScreen _selectedIndex = CyberDedScreen.home;
+
+  Future<User> getUserModel() async {
+    if (userModel == null) {
+      return User.loadFromPersistent();
+    }
+
+    return userModel!;
+  }
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _selectedIndex = CyberDedScreen.values[index];
     });
+  }
+
+  void yobaInit() async {
+    var a = await loadAsset();
+    print(a);
+  }
+
+  Future<String> loadAsset() async {
+    return await rootBundle.loadString('content/lessons/001.md');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (kIsWeb) {
+      window.onUnload.listen((event) {
+        getUserModel().then((value) => value.savePersistent());
+      });
+    }
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    getUserModel().then((value) => value.savePersistent());
   }
 
   @override
@@ -55,7 +98,19 @@ class _CyberDedHomePageState extends State<CyberDedHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(child: _screens.elementAt(_selectedIndex)),
+      body: FutureBuilder<User>(
+          future: getUserModel(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.data == null) {
+              return ErrorWidget(
+                  snapshot.error.toString() + snapshot.stackTrace.toString());
+            }
+            userModel = snapshot.data!;
+            return Center(child: getCurrentScreen(userModel!));
+          }),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -75,7 +130,7 @@ class _CyberDedHomePageState extends State<CyberDedHomePage> {
             label: 'Премиум',
           ),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex: _selectedIndex.index,
         selectedItemColor: Colors.lightBlue,
         unselectedItemColor: Colors.blueGrey,
         selectedLabelStyle: const TextStyle(
@@ -84,5 +139,27 @@ class _CyberDedHomePageState extends State<CyberDedHomePage> {
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  getCurrentScreen(User userModel) {
+    switch (_selectedIndex) {
+      case CyberDedScreen.home:
+        return HomeScreen(userModel: userModel);
+      case CyberDedScreen.lesson:
+        return const LessonsScreen();
+      case CyberDedScreen.review:
+        return const ReviewScreen();
+      case CyberDedScreen.payment:
+        return PaymentScreen(
+          userModel: userModel,
+          userModelUpdate: onUserModelUpdate,
+        );
+    }
+  }
+
+  void onUserModelUpdate(User value) {
+    setState(() {
+      userModel = value;
+    });
   }
 }

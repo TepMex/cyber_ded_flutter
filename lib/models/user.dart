@@ -3,6 +3,10 @@ import 'dart:convert';
 import 'package:cyber_ded_flutter/models/lesson.dart';
 import 'package:cyber_ded_flutter/models/premium_key.dart';
 import 'package:cyber_ded_flutter/models/review.dart';
+import 'package:cyber_ded_flutter/utils/user_model_builder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+const modelName = 'cyber_ded';
 
 class User {
   List<Lesson> lessons;
@@ -10,6 +14,9 @@ class User {
   PremiumKey premiumKey;
 
   User(this.lessons, this.reviews, this.premiumKey);
+  // static User copyOf(User userToCopy) {
+  //   return User(userToCopy.lessons, userToCopy.reviews, userToCopy.premiumKey);
+  // }
 
   User.fromJson(Map<String, dynamic> json)
       : lessons = (jsonDecode(json['lessons']) as List<dynamic>)
@@ -26,12 +33,29 @@ class User {
         'premiumKey': jsonEncode(premiumKey),
       };
 
-  void savePersistent() {
-    throw UnimplementedError('Сохраняем всю модель в персистент');
+  Future<void> savePersistent() async {
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setString(modelName, jsonEncode(toJson()));
   }
 
-  void loadFromPersistent() {
-    throw UnimplementedError('Грузим из персистента');
+  static Future<User> loadFromPersistent() async {
+    var prefs = await SharedPreferences.getInstance();
+
+    if (!prefs.containsKey(modelName)) {
+      await _initializePersistentModel();
+    }
+    var jsonModel = prefs.getString(modelName) ?? '';
+    var loadedUserModel = User.fromJson(jsonDecode(jsonModel));
+    return loadedUserModel;
+  }
+
+  static Future<void> _initializePersistentModel() async {
+    var initialModel = UserModelInitializer.create()
+        .initializeLessons()
+        .initializeReviews()
+        .initializePremiumKey()
+        .get();
+    await initialModel.savePersistent();
   }
 
   void lessonCompleted(int id) {
