@@ -1,15 +1,24 @@
 class PremiumKey {
   String? key;
+  bool isValidKeySaved;
 
-  PremiumKey(this.key);
+  PremiumKey(this.key, this.isValidKeySaved);
 
-  PremiumKey.fromJson(Map<String, dynamic> json) : key = json['key'];
+  PremiumKey.fromJson(Map<String, dynamic> json)
+      : key = json['key'],
+        isValidKeySaved = json['isKeyValid'] ?? false;
 
   Map<String, dynamic> toJson() => {
         'key': key,
+        'isKeyValid': isValidKeySaved,
       };
 
-  bool isKeyValid() {
+  Future<bool> isKeyValid() async {
+    isValidKeySaved = await _isKeyValid();
+    return isValidKeySaved;
+  }
+
+  Future<bool> _isKeyValid() async {
     if (key == null || key?.length != 20) {
       return false;
     }

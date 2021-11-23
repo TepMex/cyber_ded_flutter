@@ -65,7 +65,7 @@ void main() {
 
   test('User fromJson', () {
     var jsonStr =
-        """{"lessons":"[{\\"id\\":1,\\"contentLink\\":\\"content/lessons/001.md\\",\\"isPremiumContent\\":false,\\"status\\":\\"locked\\",\\"completeDate\\":null}]","reviews":"[{\\"id\\":1,\\"lessonId\\":1,\\"contentLink\\":\\"content/reviews/001.json\\",\\"status\\":\\"locked\\",\\"nextReviewDate\\":null}]","premiumKey":"{\\"key\\":null}","statistics":"{\\"reviewStatistics\\":\\"[]\\"}"}""";
+        """{"lessons":"[{\\"id\\":1,\\"contentLink\\":\\"content/lessons/001.md\\",\\"isPremiumContent\\":false,\\"status\\":\\"locked\\",\\"completeDate\\":null}]","reviews":"[{\\"id\\":1,\\"lessonId\\":1,\\"contentLink\\":\\"content/reviews/001.json\\",\\"status\\":\\"locked\\",\\"nextReviewDate\\":null}]","premiumKey":"{\\"key\\":null,\\"isKeyValid\\":false}","statistics":"{\\"reviewStatistics\\":\\"[]\\"}"}""";
     var u = User.fromJson(jsonDecode(jsonStr));
 
     expect(u.lessons.length, 1);
@@ -81,22 +81,22 @@ void main() {
     var l2 = Lesson(2, 'content/lessons/002.md', true, LessonStatus.completed,
         DateTime.parse('2021-12-01 05:31:01'));
     var u = User(List<Lesson>.from([l1, l2]), List<Review>.from([r1, r2]),
-        PremiumKey("test key"), Statistics([]));
+        PremiumKey("test key", false), Statistics([]));
 
     var jsonStr = jsonEncode(u);
     expect(jsonStr,
-        """{"lessons":"[{\\"id\\":1,\\"contentLink\\":\\"content/lessons/001.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"locked\\",\\"completeDate\\":\\"2021-12-01T05:32:01.000\\"},{\\"id\\":2,\\"contentLink\\":\\"content/lessons/002.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"completed\\",\\"completeDate\\":\\"2021-12-01T05:31:01.000\\"}]","reviews":"[{\\"id\\":3,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/003.json\\",\\"status\\":\\"apprentice\\",\\"nextReviewDate\\":\\"2021-12-21T05:30:01.000\\"},{\\"id\\":4,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/004.json\\",\\"status\\":\\"guru\\",\\"nextReviewDate\\":\\"2021-12-11T05:30:01.000\\"}]","premiumKey":"{\\"key\\":\\"test key\\"}","statistics":"{\\"reviewStatistics\\":\\"[]\\"}"}""");
+        """{"lessons":"[{\\"id\\":1,\\"contentLink\\":\\"content/lessons/001.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"locked\\",\\"completeDate\\":\\"2021-12-01T05:32:01.000\\"},{\\"id\\":2,\\"contentLink\\":\\"content/lessons/002.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"completed\\",\\"completeDate\\":\\"2021-12-01T05:31:01.000\\"}]","reviews":"[{\\"id\\":3,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/003.json\\",\\"status\\":\\"apprentice\\",\\"nextReviewDate\\":\\"2021-12-21T05:30:01.000\\"},{\\"id\\":4,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/004.json\\",\\"status\\":\\"guru\\",\\"nextReviewDate\\":\\"2021-12-11T05:30:01.000\\"}]","premiumKey":"{\\"key\\":\\"test key\\",\\"isKeyValid\\":false}","statistics":"{\\"reviewStatistics\\":\\"[]\\"}","version":"\\"1.0\\""}""");
   });
 
-  test('Premium key validation', () {
-    var key1 = PremiumKey("rqPA6iB71QM3uaumRVTn");
-    var key2 = PremiumKey("aafasfdafasd");
-    var key3 = PremiumKey("rqPA6i!71QM3uaumRV_\$");
-    var key4 = PremiumKey("rqPA 6i B71 uaumRVTn");
+  test('Premium key validation', () async {
+    var key1 = PremiumKey("rqPA6iB71QM3uaumRVTn", true);
+    var key2 = PremiumKey("aafasfdafasd", false);
+    var key3 = PremiumKey("rqPA6i!71QM3uaumRV_\$", false);
+    var key4 = PremiumKey("rqPA 6i B71 uaumRVTn", false);
 
-    expect(key1.isKeyValid(), true);
-    expect(key2.isKeyValid(), false);
-    expect(key3.isKeyValid(), false);
-    expect(key4.isKeyValid(), false);
+    expect(await key1.isKeyValid(), true);
+    expect(await key2.isKeyValid(), false);
+    expect(await key3.isKeyValid(), false);
+    expect(await key4.isKeyValid(), false);
   });
 }

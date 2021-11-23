@@ -9,13 +9,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const modelName = 'cyber_ded';
 
+const actualVersion = '1.0';
+
 class User {
   List<Lesson> lessons;
   List<Review> reviews;
   PremiumKey premiumKey;
   Statistics stats;
+  String version;
 
-  User(this.lessons, this.reviews, this.premiumKey, this.stats);
+  User(this.lessons, this.reviews, this.premiumKey, this.stats,
+      {this.version = actualVersion});
 
   User.fromJson(Map<String, dynamic> json)
       : lessons = (jsonDecode(json['lessons']) as List<dynamic>)
@@ -25,13 +29,15 @@ class User {
             .map((e) => Review.fromJson(e))
             .toList(),
         premiumKey = PremiumKey.fromJson(jsonDecode(json['premiumKey'])),
-        stats = Statistics.fromJson(jsonDecode(json['statistics']));
+        stats = Statistics.fromJson(jsonDecode(json['statistics'])),
+        version = json['version'] ?? 'very old';
 
   Map<String, dynamic> toJson() => {
         'lessons': jsonEncode(lessons),
         'reviews': jsonEncode(reviews),
         'premiumKey': jsonEncode(premiumKey),
         'statistics': jsonEncode(stats),
+        'version': jsonEncode(actualVersion),
       };
 
   Future<void> savePersistent() async {
@@ -42,11 +48,12 @@ class User {
   static Future<User> loadFromPersistent() async {
     var prefs = await SharedPreferences.getInstance();
 
-    if (!prefs.containsKey(modelName)) {
+    var jsonModel = prefs.getString(modelName);
+    if (jsonModel == null || !checkVersion(jsonModel)) {
       await _initializePersistentModel();
     }
-    var jsonModel = prefs.getString(modelName) ?? '';
-    var loadedUserModel = User.fromJson(jsonDecode(jsonModel));
+    jsonModel = prefs.getString(modelName);
+    var loadedUserModel = User.fromJson(jsonDecode(jsonModel!));
     return loadedUserModel;
   }
 
@@ -65,5 +72,9 @@ class User {
 
   void reviewCompleted(int id, bool success) {
     reviews.firstWhere((review) => review.id == id).complete(success);
+  }
+
+  static bool checkVersion(String jsonModel) {
+    return jsonDecode(jsonModel)['version'] == actualVersion;
   }
 }

@@ -8,7 +8,7 @@ class UserModelInitializer {
   UserModelInitializer(this._currentUser);
 
   static UserModelInitializer create() {
-    var currentUser = User([], [], PremiumKey(''), Statistics([]));
+    var currentUser = User([], [], PremiumKey('', false), Statistics([]));
     return UserModelInitializer(currentUser);
   }
 
@@ -31,7 +31,7 @@ class UserModelInitializer {
   }
 
   UserModelInitializer initializePremiumKey() {
-    _currentUser.premiumKey = PremiumKey(null);
+    _currentUser.premiumKey = PremiumKey(null, false);
     return this;
   }
 }

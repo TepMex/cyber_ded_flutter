@@ -45,11 +45,10 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
     with WidgetsBindingObserver {
   User? userModel;
   CyberDedScreen _selectedIndex = CyberDedScreen.home;
+  PaymentScreen? paymentScreen;
 
   Future<User> getUserModel() async {
-    if (userModel == null) {
-      return User.loadFromPersistent();
-    }
+    userModel ??= await User.loadFromPersistent();
 
     return userModel!;
   }
@@ -109,6 +108,7 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
                   snapshot.error.toString() + snapshot.stackTrace.toString());
             }
             userModel = snapshot.data!;
+            initScreens(userModel!);
             return Center(child: getCurrentScreen(userModel!));
           }),
       bottomNavigationBar: BottomNavigationBar(
@@ -150,10 +150,7 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
       case CyberDedScreen.review:
         return const ReviewScreen();
       case CyberDedScreen.payment:
-        return PaymentScreen(
-          userModel: userModel,
-          userModelUpdate: onUserModelUpdate,
-        );
+        return paymentScreen;
     }
   }
 
@@ -161,5 +158,13 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
     setState(() {
       userModel = value;
     });
+    userModel!.savePersistent();
+  }
+
+  void initScreens(User userModel) {
+    paymentScreen = PaymentScreen(
+      userModel: userModel,
+      userModelUpdate: onUserModelUpdate,
+    );
   }
 }
