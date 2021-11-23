@@ -1,3 +1,4 @@
+import 'package:cyber_ded_flutter/utils/srs.dart';
 import 'package:flutter/foundation.dart';
 
 enum SRSStatus { locked, unlocked, apprentice, guru, enlightened, burned }
@@ -38,6 +39,12 @@ class Review {
       };
 
   void complete(bool success) {
-    throw UnimplementedError('В зависимости от успеха, меняем status');
+    if (success) {
+      status = nextStatus(status);
+    } else {
+      status = previousStatus(status);
+    }
+    nextReviewDate =
+        (nextReviewDate ?? DateTime.now()).add(srsStatusDuration[status]!);
   }
 }

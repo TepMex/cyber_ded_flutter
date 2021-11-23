@@ -7,9 +7,16 @@ class ReviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: FloatingActionButton.extended(
-        label: const Text('Начать повторения'),
-        onPressed: () {},
+      child: Column(
+        children: [
+          const Spacer(flex: 1),
+          FloatingActionButton.extended(
+            label: const Text('Начать повторения'),
+            onPressed: () {},
+          ),
+          const Text('Доступно 14'),
+          const Spacer(flex: 1),
+        ],
       ),
     );
   }
