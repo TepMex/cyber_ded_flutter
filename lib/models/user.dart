@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const modelName = 'cyber_ded';
 
-const actualVersion = '1.0';
+const actualVersion = '1.1';
 
 class User {
   List<Lesson> lessons;

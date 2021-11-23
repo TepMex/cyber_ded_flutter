@@ -1,11 +1,26 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class LessonsScreen extends StatelessWidget {
-  const LessonsScreen({Key? key}) : super(key: key);
+  final String mdContent;
+  const LessonsScreen({Key? key, required this.mdContent}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Text("Экран уроков",
-        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold));
+    return Row(
+      children: [
+        const Spacer(flex: 1),
+        Expanded(
+          flex: 2,
+          child: Markdown(
+            styleSheet: MarkdownStyleSheet(
+              textScaleFactor: 2,
+            ),
+            data: mdContent,
+          ),
+        ),
+        const Spacer(flex: 1),
+      ],
+    );
   }
 }

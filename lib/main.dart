@@ -46,6 +46,7 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
   User? userModel;
   CyberDedScreen _selectedIndex = CyberDedScreen.home;
   PaymentScreen? paymentScreen;
+  String lessonMd = '';
 
   Future<User> getUserModel() async {
     userModel ??= await User.loadFromPersistent();
@@ -59,13 +60,11 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
     });
   }
 
-  void yobaInit() async {
-    var a = await loadAsset();
-    print(a);
-  }
-
-  Future<String> loadAsset() async {
-    return await rootBundle.loadString('content/lessons/001.md');
+  void loadAsset() async {
+    var md = await rootBundle.loadString('content/lessons/001.md');
+    setState(() {
+      lessonMd = md;
+    });
   }
 
   @override
@@ -77,6 +76,7 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
       });
     }
     WidgetsBinding.instance!.addObserver(this);
+    loadAsset();
   }
 
   @override
@@ -146,7 +146,7 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
       case CyberDedScreen.home:
         return HomeScreen(userModel: userModel);
       case CyberDedScreen.lesson:
-        return const LessonsScreen();
+        return LessonsScreen(mdContent: lessonMd);
       case CyberDedScreen.review:
         return const ReviewScreen();
       case CyberDedScreen.payment:

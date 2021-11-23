@@ -34,9 +34,9 @@ class HomeScreen extends StatelessWidget {
           const Spacer(
             flex: 5,
           ),
-          const AutoSizeText('57%',
+          AutoSizeText(getReviewAccuracy(),
               presetFontSizes: presetFontSizesNumbers,
-              style: TextStyle(fontWeight: FontWeight.bold)),
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           const AutoSizeText('Точность повторений',
               maxLines: 1,
               presetFontSizes: presetFontSizesText,
@@ -145,5 +145,22 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String getReviewAccuracy() {
+    var completed = userModel.stats.reviewStatistics
+        .where((element) => element != false)
+        .length;
+
+    var all = userModel.stats.reviewStatistics.length;
+    var accuracy = completed / all * 100;
+
+    if (!accuracy.isFinite) {
+      accuracy = 0;
+    }
+
+    var result = accuracy.toStringAsFixed(0) + '%';
+
+    return result;
   }
 }
