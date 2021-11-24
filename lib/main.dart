@@ -1,3 +1,4 @@
+import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
 
 import 'package:cyber_ded_flutter/home_screen.dart';
@@ -10,9 +11,13 @@ import 'package:flutter/services.dart';
 
 import 'models/user.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const CyberDedApp());
+  var userModel = await User.loadFromPersistent();
+  runApp(ChangeNotifierProvider(
+    create: (context) => userModel,
+    child: const CyberDedApp(),
+  ));
 }
 
 class CyberDedApp extends StatelessWidget {

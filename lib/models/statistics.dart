@@ -1,19 +1,18 @@
 import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'statistics.g.dart';
+
+@JsonSerializable()
 class Statistics {
   List<bool> reviewStatistics;
 
   Statistics(this.reviewStatistics);
 
-  Statistics.fromJson(Map<String, dynamic> json)
-      : reviewStatistics =
-            (jsonDecode(json['reviewStatistics']) as List<dynamic>)
-                .map((e) => bool.fromEnvironment(e))
-                .toList();
+  factory Statistics.fromJson(Map<String, dynamic> json) =>
+      _$StatisticsFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'reviewStatistics': jsonEncode(reviewStatistics),
-      };
+  Map<String, dynamic> toJson() => _$StatisticsToJson(this);
 
   void logReviewEvent(bool newStatus) {
     reviewStatistics.add(newStatus);

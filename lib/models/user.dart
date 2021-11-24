@@ -5,40 +5,31 @@ import 'package:cyber_ded_flutter/models/premium_key.dart';
 import 'package:cyber_ded_flutter/models/review.dart';
 import 'package:cyber_ded_flutter/models/statistics.dart';
 import 'package:cyber_ded_flutter/utils/user_model_builder.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:json_annotation/json_annotation.dart';
+
+part 'user.g.dart';
 
 const modelName = 'cyber_ded';
 
-const actualVersion = '1.1';
+const actualVersion = '1.2';
 
-class User {
+@JsonSerializable()
+class User extends ChangeNotifier {
   List<Lesson> lessons;
   List<Review> reviews;
   PremiumKey premiumKey;
-  Statistics stats;
+  Statistics statistics;
   String version;
 
-  User(this.lessons, this.reviews, this.premiumKey, this.stats,
+  User(this.lessons, this.reviews, this.premiumKey, this.statistics,
       {this.version = actualVersion});
 
-  User.fromJson(Map<String, dynamic> json)
-      : lessons = (jsonDecode(json['lessons']) as List<dynamic>)
-            .map((e) => Lesson.fromJson(e))
-            .toList(),
-        reviews = (jsonDecode(json['reviews']) as List<dynamic>)
-            .map((e) => Review.fromJson(e))
-            .toList(),
-        premiumKey = PremiumKey.fromJson(jsonDecode(json['premiumKey'])),
-        stats = Statistics.fromJson(jsonDecode(json['statistics'])),
-        version = json['version'] ?? 'very old';
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'lessons': jsonEncode(lessons),
-        'reviews': jsonEncode(reviews),
-        'premiumKey': jsonEncode(premiumKey),
-        'statistics': jsonEncode(stats),
-        'version': jsonEncode(actualVersion),
-      };
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 
   Future<void> savePersistent() async {
     var prefs = await SharedPreferences.getInstance();
@@ -68,10 +59,12 @@ class User {
 
   void lessonCompleted(int id) {
     lessons.firstWhere((lesson) => lesson.id == id).complete();
+    notifyListeners();
   }
 
   void reviewCompleted(int id, bool success) {
     reviews.firstWhere((review) => review.id == id).complete(success);
+    notifyListeners();
   }
 
   static bool checkVersion(String jsonModel) {

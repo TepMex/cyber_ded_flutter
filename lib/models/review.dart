@@ -1,5 +1,8 @@
 import 'package:cyber_ded_flutter/utils/srs.dart';
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'review.g.dart';
 
 enum SRSStatus { locked, unlocked, apprentice, guru, enlightened, burned }
 
@@ -11,6 +14,7 @@ extension SRSStatusSerializer on SRSStatus {
   }
 }
 
+@JsonSerializable()
 class Review {
   final int id;
   final int lessonId;
@@ -21,22 +25,9 @@ class Review {
   Review(this.id, this.lessonId, this.contentLink, this.status,
       this.nextReviewDate);
 
-  Review.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        lessonId = json['lessonId'],
-        contentLink = json['contentLink'],
-        status = SRSStatusSerializer.parse(json['status']),
-        nextReviewDate = json['nextReviewDate'] == null
-            ? null
-            : DateTime.tryParse(json['nextReviewDate']);
+  factory Review.fromJson(Map<String, dynamic> json) => _$ReviewFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'lessonId': lessonId,
-        'contentLink': contentLink,
-        'status': status.name,
-        'nextReviewDate': nextReviewDate?.toIso8601String() ?? nextReviewDate
-      };
+  Map<String, dynamic> toJson() => _$ReviewToJson(this);
 
   void complete(bool success) {
     if (success) {

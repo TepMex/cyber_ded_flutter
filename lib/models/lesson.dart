@@ -1,4 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'lesson.g.dart';
 
 enum LessonStatus { payLocked, locked, open, completed }
 
@@ -10,6 +13,7 @@ extension LessonStatusSerializer on LessonStatus {
   }
 }
 
+@JsonSerializable()
 class Lesson {
   final int id;
   final String contentLink;
@@ -20,22 +24,9 @@ class Lesson {
   Lesson(this.id, this.contentLink, this.isPremiumContent, this.status,
       this.completeDate);
 
-  Lesson.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        contentLink = json['contentLink'],
-        isPremiumContent = json['isPremiumContent'],
-        status = LessonStatusSerializer.parse(json['status']),
-        completeDate = json['completeDate'] == null
-            ? null
-            : DateTime.tryParse(json['completeDate']);
+  factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'contentLink': contentLink,
-        'isPremiumContent': isPremiumContent,
-        'status': status.name,
-        'completeDate': completeDate?.toIso8601String() ?? completeDate
-      };
+  Map<String, dynamic> toJson() => _$LessonToJson(this);
 
   void complete() {
     status = LessonStatus.completed;

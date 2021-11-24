@@ -1,17 +1,20 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'premium_key.g.dart';
+
+@JsonSerializable()
 class PremiumKey {
   String? key;
+
+  @JsonKey(name: 'isKeyValid')
   bool isValidKeySaved;
 
   PremiumKey(this.key, this.isValidKeySaved);
 
-  PremiumKey.fromJson(Map<String, dynamic> json)
-      : key = json['key'],
-        isValidKeySaved = json['isKeyValid'] ?? false;
+  factory PremiumKey.fromJson(Map<String, dynamic> json) =>
+      _$PremiumKeyFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'key': key,
-        'isKeyValid': isValidKeySaved,
-      };
+  Map<String, dynamic> toJson() => _$PremiumKeyToJson(this);
 
   Future<bool> isKeyValid() async {
     isValidKeySaved = await _isKeyValid();

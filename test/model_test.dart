@@ -65,7 +65,7 @@ void main() {
 
   test('User fromJson', () {
     var jsonStr =
-        """{"lessons":"[{\\"id\\":1,\\"contentLink\\":\\"content/lessons/001.md\\",\\"isPremiumContent\\":false,\\"status\\":\\"locked\\",\\"completeDate\\":null}]","reviews":"[{\\"id\\":1,\\"lessonId\\":1,\\"contentLink\\":\\"content/reviews/001.json\\",\\"status\\":\\"locked\\",\\"nextReviewDate\\":null}]","premiumKey":"{\\"key\\":null,\\"isKeyValid\\":false}","statistics":"{\\"reviewStatistics\\":\\"[]\\"}"}""";
+        """{"lessons":[{"id":1,"contentLink":"content/lessons/001.md","isPremiumContent":false,"status":"locked","completeDate":null}],"reviews":[{"id":1,"lessonId":1,"contentLink":"content/reviews/001.json","status":"locked","nextReviewDate":null}],"premiumKey":{"key":null,"isKeyValid":false},"statistics":{"reviewStatistics":[]}}""";
     var u = User.fromJson(jsonDecode(jsonStr));
 
     expect(u.lessons.length, 1);
@@ -85,7 +85,7 @@ void main() {
 
     var jsonStr = jsonEncode(u);
     expect(jsonStr,
-        """{"lessons":"[{\\"id\\":1,\\"contentLink\\":\\"content/lessons/001.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"locked\\",\\"completeDate\\":\\"2021-12-01T05:32:01.000\\"},{\\"id\\":2,\\"contentLink\\":\\"content/lessons/002.md\\",\\"isPremiumContent\\":true,\\"status\\":\\"completed\\",\\"completeDate\\":\\"2021-12-01T05:31:01.000\\"}]","reviews":"[{\\"id\\":3,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/003.json\\",\\"status\\":\\"apprentice\\",\\"nextReviewDate\\":\\"2021-12-21T05:30:01.000\\"},{\\"id\\":4,\\"lessonId\\":4,\\"contentLink\\":\\"content/review/004.json\\",\\"status\\":\\"guru\\",\\"nextReviewDate\\":\\"2021-12-11T05:30:01.000\\"}]","premiumKey":"{\\"key\\":\\"test key\\",\\"isKeyValid\\":false}","statistics":"{\\"reviewStatistics\\":\\"[]\\"}","version":"\\"1.1\\""}""");
+        """{"lessons":[{"id":1,"contentLink":"content/lessons/001.md","isPremiumContent":true,"status":"locked","completeDate":"2021-12-01T05:32:01.000"},{"id":2,"contentLink":"content/lessons/002.md","isPremiumContent":true,"status":"completed","completeDate":"2021-12-01T05:31:01.000"}],"reviews":[{"id":3,"lessonId":4,"contentLink":"content/review/003.json","status":"apprentice","nextReviewDate":"2021-12-21T05:30:01.000"},{"id":4,"lessonId":4,"contentLink":"content/review/004.json","status":"guru","nextReviewDate":"2021-12-11T05:30:01.000"}],"premiumKey":{"key":"test key","isKeyValid":false},"statistics":{"reviewStatistics":[]},"version":"1.2"}""");
   });
 
   test('Premium key validation', () async {

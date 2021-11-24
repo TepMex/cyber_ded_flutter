@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cyber_ded_flutter/models/lesson.dart';
 import 'package:cyber_ded_flutter/models/review.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'models/user.dart';
 
@@ -34,9 +35,13 @@ class HomeScreen extends StatelessWidget {
           const Spacer(
             flex: 5,
           ),
-          AutoSizeText(getReviewAccuracy(),
-              presetFontSizes: presetFontSizesNumbers,
-              style: const TextStyle(fontWeight: FontWeight.bold)),
+          Consumer<User>(
+            builder: (context, user, childId) {
+              return AutoSizeText(getReviewAccuracy(user),
+                  presetFontSizes: presetFontSizesNumbers,
+                  style: const TextStyle(fontWeight: FontWeight.bold));
+            },
+          ),
           const AutoSizeText('Точность повторений',
               maxLines: 1,
               presetFontSizes: presetFontSizesText,
@@ -80,14 +85,19 @@ class HomeScreen extends StatelessWidget {
               ),
               Column(
                 children: [
-                  AutoSizeText(
-                      userModel.reviews
-                          .where((review) => review.status == SRSStatus.guru)
-                          .length
-                          .toString(),
-                      maxLines: 1,
-                      presetFontSizes: presetFontSizesNumbers,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Consumer<User>(
+                    builder: (context, user, childId) {
+                      return AutoSizeText(
+                          user.reviews
+                              .where(
+                                  (review) => review.status == SRSStatus.guru)
+                              .length
+                              .toString(),
+                          maxLines: 1,
+                          presetFontSizes: presetFontSizesNumbers,
+                          style: const TextStyle(fontWeight: FontWeight.bold));
+                    },
+                  ),
                   const AutoSizeText('гуру',
                       maxLines: 1,
                       presetFontSizes: presetFontSizesSRSStatus,
@@ -147,12 +157,12 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  String getReviewAccuracy() {
-    var completed = userModel.stats.reviewStatistics
+  String getReviewAccuracy(User user) {
+    var completed = user.statistics.reviewStatistics
         .where((element) => element != false)
         .length;
 
-    var all = userModel.stats.reviewStatistics.length;
+    var all = user.statistics.reviewStatistics.length;
     var accuracy = completed / all * 100;
 
     if (!accuracy.isFinite) {
