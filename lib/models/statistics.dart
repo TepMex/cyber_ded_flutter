@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'statistics.g.dart';
 
 @JsonSerializable()
-class Statistics {
+class Statistics extends ChangeNotifier {
   List<bool> reviewStatistics;
 
   Statistics(this.reviewStatistics);

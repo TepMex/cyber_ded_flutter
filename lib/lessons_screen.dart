@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class LessonsScreen extends StatelessWidget {
@@ -11,10 +12,10 @@ class LessonsScreen extends StatelessWidget {
       children: [
         const Spacer(flex: 1),
         Expanded(
-          flex: 2,
+          flex: kIsWeb ? 2 : 20,
           child: Markdown(
             styleSheet: MarkdownStyleSheet(
-              textScaleFactor: 2,
+              textScaleFactor: kIsWeb ? 2 : 1.25,
             ),
             data: mdContent,
           ),

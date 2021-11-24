@@ -14,7 +14,7 @@ extension LessonStatusSerializer on LessonStatus {
 }
 
 @JsonSerializable()
-class Lesson {
+class Lesson extends ChangeNotifier {
   final int id;
   final String contentLink;
   bool isPremiumContent;

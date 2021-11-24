@@ -11,8 +11,7 @@ const List<double>? presetFontSizesText = [30, 24, 16];
 const List<double>? presetFontSizesSRSStatus = [18, 16];
 
 class HomeScreen extends StatelessWidget {
-  final User userModel;
-  const HomeScreen({Key? key, required this.userModel}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +21,18 @@ class HomeScreen extends StatelessWidget {
           const Spacer(
             flex: 5,
           ),
-          AutoSizeText(
-              userModel.lessons
-                  .where((lesson) => lesson.status == LessonStatus.completed)
-                  .length
-                  .toString(),
-              presetFontSizes: presetFontSizesNumbers,
-              style: const TextStyle(fontWeight: FontWeight.bold)),
+          Consumer<User>(
+            builder: (context, userModel, childId) {
+              return AutoSizeText(
+                  userModel.lessons
+                      .where(
+                          (lesson) => lesson.status == LessonStatus.completed)
+                      .length
+                      .toString(),
+                  presetFontSizes: presetFontSizesNumbers,
+                  style: const TextStyle(fontWeight: FontWeight.bold));
+            },
+          ),
           const AutoSizeText('Уроков пройдено',
               presetFontSizes: presetFontSizesText,
               style: TextStyle(fontWeight: FontWeight.normal)),
@@ -65,15 +69,19 @@ class HomeScreen extends StatelessWidget {
               ),
               Column(
                 children: [
-                  AutoSizeText(
-                      userModel.reviews
-                          .where(
-                              (review) => review.status == SRSStatus.apprentice)
-                          .length
-                          .toString(),
-                      maxLines: 1,
-                      presetFontSizes: presetFontSizesNumbers,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Consumer<User>(
+                    builder: (context, userModel, child) {
+                      return AutoSizeText(
+                          userModel.reviews
+                              .where((review) =>
+                                  review.status == SRSStatus.apprentice)
+                              .length
+                              .toString(),
+                          maxLines: 1,
+                          presetFontSizes: presetFontSizesNumbers,
+                          style: const TextStyle(fontWeight: FontWeight.bold));
+                    },
+                  ),
                   const AutoSizeText('ученик',
                       maxLines: 1,
                       presetFontSizes: presetFontSizesSRSStatus,
@@ -109,15 +117,19 @@ class HomeScreen extends StatelessWidget {
               ),
               Column(
                 children: [
-                  AutoSizeText(
-                      userModel.reviews
-                          .where((review) =>
-                              review.status == SRSStatus.enlightened)
-                          .length
-                          .toString(),
-                      maxLines: 1,
-                      presetFontSizes: presetFontSizesNumbers,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Consumer<User>(
+                    builder: (context, userModel, child) {
+                      return AutoSizeText(
+                          userModel.reviews
+                              .where((review) =>
+                                  review.status == SRSStatus.enlightened)
+                              .length
+                              .toString(),
+                          maxLines: 1,
+                          presetFontSizes: presetFontSizesNumbers,
+                          style: const TextStyle(fontWeight: FontWeight.bold));
+                    },
+                  ),
                   const AutoSizeText('мастер',
                       maxLines: 1,
                       textAlign: TextAlign.center,
@@ -130,14 +142,19 @@ class HomeScreen extends StatelessWidget {
               ),
               Column(
                 children: [
-                  AutoSizeText(
-                      userModel.reviews
-                          .where((review) => review.status == SRSStatus.burned)
-                          .length
-                          .toString(),
-                      maxLines: 1,
-                      presetFontSizes: presetFontSizesNumbers,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Consumer<User>(
+                    builder: (context, userModel, child) {
+                      return AutoSizeText(
+                          userModel.reviews
+                              .where(
+                                  (review) => review.status == SRSStatus.burned)
+                              .length
+                              .toString(),
+                          maxLines: 1,
+                          presetFontSizes: presetFontSizesNumbers,
+                          style: const TextStyle(fontWeight: FontWeight.bold));
+                    },
+                  ),
                   const AutoSizeText('готово',
                       maxLines: 1,
                       presetFontSizes: presetFontSizesSRSStatus,

@@ -48,16 +48,8 @@ enum CyberDedScreen { home, lesson, review, payment }
 
 class _CyberDedHomePageState extends State<CyberDedHomePage>
     with WidgetsBindingObserver {
-  User? userModel;
   CyberDedScreen _selectedIndex = CyberDedScreen.home;
-  PaymentScreen? paymentScreen;
   String lessonMd = '';
-
-  Future<User> getUserModel() async {
-    userModel ??= await User.loadFromPersistent();
-
-    return userModel!;
-  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -75,13 +67,19 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     if (kIsWeb) {
-      html.window.onUnload.listen((event) {
-        getUserModel().then((value) => value.savePersistent());
+      html.window.onUnload.listen((event) async {
+        await Provider.of<User>(context, listen: false).savePersistent();
       });
     }
-    WidgetsBinding.instance!.addObserver(this);
     loadAsset();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    Provider.of<User>(context, listen: false).savePersistent();
   }
 
   @override
@@ -91,31 +89,12 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    getUserModel().then((value) => value.savePersistent());
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: FutureBuilder<User>(
-          future: getUserModel(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.data == null) {
-              return ErrorWidget(
-                  snapshot.error.toString() + snapshot.stackTrace.toString());
-            }
-            userModel = snapshot.data!;
-            initScreens(userModel!);
-            return Center(child: getCurrentScreen(userModel!));
-          }),
+      body: Center(child: getCurrentScreen()),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -146,30 +125,16 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
     );
   }
 
-  getCurrentScreen(User userModel) {
+  getCurrentScreen() {
     switch (_selectedIndex) {
       case CyberDedScreen.home:
-        return HomeScreen(userModel: userModel);
+        return const HomeScreen();
       case CyberDedScreen.lesson:
         return LessonsScreen(mdContent: lessonMd);
       case CyberDedScreen.review:
         return const ReviewScreen();
       case CyberDedScreen.payment:
-        return paymentScreen;
+        return const PaymentScreen();
     }
-  }
-
-  void onUserModelUpdate(User value) {
-    setState(() {
-      userModel = value;
-    });
-    userModel!.savePersistent();
-  }
-
-  void initScreens(User userModel) {
-    paymentScreen = PaymentScreen(
-      userModel: userModel,
-      userModelUpdate: onUserModelUpdate,
-    );
   }
 }

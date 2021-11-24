@@ -15,7 +15,7 @@ extension SRSStatusSerializer on SRSStatus {
 }
 
 @JsonSerializable()
-class Review {
+class Review extends ChangeNotifier {
   final int id;
   final int lessonId;
   final String contentLink;

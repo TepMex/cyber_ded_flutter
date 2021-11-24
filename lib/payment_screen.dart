@@ -1,15 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'models/user.dart';
 
 class PaymentScreen extends StatefulWidget {
-  final User userModel;
-  final ValueChanged<User> userModelUpdate;
-
-  const PaymentScreen(
-      {Key? key, required this.userModel, required this.userModelUpdate})
-      : super(key: key);
+  const PaymentScreen({Key? key}) : super(key: key);
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -18,13 +14,6 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   bool alreadyChecked = false;
   var keyEditingController = TextEditingController();
-  late User userModel;
-
-  @override
-  void initState() {
-    userModel = widget.userModel;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +31,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   FloatingActionButton.extended(
                       label: const Text('Сбросить'),
                       onPressed: () {
+                        keyEditingController.clear();
+                        setState(() {
+                          alreadyChecked = false;
+                        });
+                        var userModel =
+                            Provider.of<User>(context, listen: false);
                         userModel.premiumKey.key = null;
-                        widget.userModelUpdate(widget.userModel);
+                        userModel.premiumKey.isValidKeySaved = false;
                       }),
                   const Spacer(flex: 1),
                 ],
               );
+            } else if (snapshot.connectionState != ConnectionState.done) {
+              return const CircularProgressIndicator();
             }
             return Column(
               children: [
@@ -69,7 +66,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     onPressed: () {
                       setState(() {
                         alreadyChecked = true;
-                        userModel.premiumKey.key = keyEditingController.text;
+                        Provider.of<User>(context, listen: false)
+                            .premiumKey
+                            .key = keyEditingController.text;
                       });
                     }),
                 Text(
@@ -84,11 +83,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Future<bool> getKeyValidationStatus() async {
-    if (userModel.premiumKey.key != null &&
-        userModel.premiumKey.isValidKeySaved) {
+    if (Provider.of<User>(context, listen: false).premiumKey.key != null &&
+        Provider.of<User>(context, listen: false).premiumKey.isValidKeySaved) {
       return true;
     }
 
-    return await userModel.premiumKey.isKeyValid();
+    return await Provider.of<User>(context, listen: false)
+        .premiumKey
+        .isKeyValid();
   }
 }

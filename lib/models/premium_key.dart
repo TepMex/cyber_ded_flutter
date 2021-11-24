@@ -1,9 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'premium_key.g.dart';
 
 @JsonSerializable()
-class PremiumKey {
+class PremiumKey extends ChangeNotifier {
   String? key;
 
   @JsonKey(name: 'isKeyValid')
