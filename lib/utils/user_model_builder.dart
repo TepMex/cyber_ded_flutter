@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:collection/collection.dart';
 
 import 'package:cyber_ded_flutter/models/review.dart';
@@ -60,7 +61,13 @@ class UserModelInitializer {
       } else {
         lessonId = -1;
       }
-      return Review(idx + 1, lessonId, fileName, SRSStatus.locked, null);
+      var rnd = Random.secure().nextDouble() > 0.5;
+      return Review(
+          idx + 1,
+          lessonId,
+          fileName,
+          rnd ? SRSStatus.locked : SRSStatus.unlocked,
+          rnd ? null : DateTime.now().add(const Duration(days: -1)));
     });
     _currentUser.reviews.addAll(reviews);
     return this;

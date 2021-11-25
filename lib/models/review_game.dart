@@ -52,4 +52,12 @@ class ReviewGame {
 
   factory ReviewGame.fromJson(Map<String, dynamic> json) =>
       _$ReviewGameFromJson(json);
+
+  ReviewGamePassage getStartPassage() {
+    return getPassageById(startNodePid);
+  }
+
+  ReviewGamePassage getPassageById(String refPid) {
+    return passages.firstWhere((pass) => pass.pid == refPid);
+  }
 }

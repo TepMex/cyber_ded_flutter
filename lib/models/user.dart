@@ -14,7 +14,7 @@ part 'user.g.dart';
 
 const modelName = 'cyber_ded';
 
-const actualVersion = '1.2';
+const actualVersion = '1.3';
 
 @JsonSerializable()
 class User extends ChangeNotifier {
@@ -65,6 +65,7 @@ class User extends ChangeNotifier {
 
   void reviewCompleted(int id, bool success) {
     reviews.firstWhere((review) => review.id == id).complete(success);
+    statistics.reviewStatistics.add(success);
     notifyListeners();
   }
 

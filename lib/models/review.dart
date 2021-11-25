@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:cyber_ded_flutter/models/review_game.dart';
 import 'package:cyber_ded_flutter/utils/srs.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'review.g.dart';
@@ -35,7 +39,11 @@ class Review extends ChangeNotifier {
     } else {
       status = previousStatus(status);
     }
-    nextReviewDate =
-        (nextReviewDate ?? DateTime.now()).add(srsStatusDuration[status]!);
+    nextReviewDate = DateTime.now().add(srsStatusDuration[status]!);
+  }
+
+  Future<ReviewGame> loadGame() async {
+    var gameJson = await rootBundle.loadString(contentLink);
+    return ReviewGame.fromJson(jsonDecode(gameJson));
   }
 }
