@@ -48,11 +48,13 @@ ReviewGame _$ReviewGameFromJson(Map<String, dynamic> json) => ReviewGame(
       (json['passages'] as List<dynamic>)
           .map((e) => ReviewGamePassage.fromJson(e as Map<String, dynamic>))
           .toList(),
+      json['lessonId'] as int,
     );
 
 Map<String, dynamic> _$ReviewGameToJson(ReviewGame instance) =>
     <String, dynamic>{
       'name': instance.name,
       'startnode': instance.startNodePid,
+      'lessonId': instance.lessonId,
       'passages': instance.passages,
     };

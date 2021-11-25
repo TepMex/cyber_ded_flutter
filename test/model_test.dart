@@ -6,7 +6,6 @@ import 'package:cyber_ded_flutter/models/review.dart';
 import 'package:cyber_ded_flutter/models/review_game.dart';
 import 'package:cyber_ded_flutter/models/statistics.dart';
 import 'package:cyber_ded_flutter/models/user.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -105,7 +104,8 @@ void main() {
 
   test('Game model from JSON', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    var gameJsonStr = await rootBundle.loadString('content/reviews/001.json');
+    var gameJsonStr =
+        await rootBundle.loadString('content/reviews/001_l1.json');
     ReviewGame game = ReviewGame.fromJson(jsonDecode(gameJsonStr));
     expect(game.passages.length, 10);
     expect(game.passages.firstWhere((pass) => pass.pid == '10').result, true);

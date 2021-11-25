@@ -49,12 +49,13 @@ class User extends ChangeNotifier {
   }
 
   static Future<void> _initializePersistentModel() async {
-    var initialModel = UserModelInitializer.create()
-        .initializeLessons()
-        .initializeReviews()
-        .initializePremiumKey()
-        .get();
-    await initialModel.savePersistent();
+    var initialModel = await UserModelInitializer.create();
+    await initialModel.initializeLessons();
+    await initialModel.initializeReviews();
+    await initialModel.initializePremiumKey();
+
+    var user = await initialModel.get();
+    await user.savePersistent();
   }
 
   void lessonCompleted(int id) {

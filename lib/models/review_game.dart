@@ -44,9 +44,11 @@ class ReviewGame {
   @JsonKey(name: 'startnode')
   String startNodePid;
 
+  int lessonId;
+
   List<ReviewGamePassage> passages;
 
-  ReviewGame(this.name, this.startNodePid, this.passages);
+  ReviewGame(this.name, this.startNodePid, this.passages, this.lessonId);
 
   factory ReviewGame.fromJson(Map<String, dynamic> json) =>
       _$ReviewGameFromJson(json);
