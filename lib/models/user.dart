@@ -14,7 +14,7 @@ part 'user.g.dart';
 
 const modelName = 'cyber_ded';
 
-const actualVersion = '1.3';
+const actualVersion = '1.6';
 
 @JsonSerializable()
 class User extends ChangeNotifier {

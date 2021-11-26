@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:collection/collection.dart';
+import 'package:path/path.dart' as p;
 
 import 'package:cyber_ded_flutter/models/review.dart';
 import 'package:cyber_ded_flutter/models/premium_key.dart';
@@ -33,14 +34,20 @@ class UserModelInitializer {
         .map((key) => key.toString())
         .toList();
 
-    var lessons = lessonFiles.mapIndexed((idx, fileName) => Lesson(
-        idx + 1,
-        fileName,
-        fileName.contains(premiumSuffix),
-        fileName.contains(premiumSuffix)
-            ? LessonStatus.payLocked
-            : LessonStatus.locked,
-        null));
+    var lessons = lessonFiles.mapIndexed((idx, fileName) {
+      var header = fileName.split('__').elementAt(1);
+      header = p.withoutExtension(header).replaceAll(RegExp(r'_'), ' ');
+      return Lesson(
+          idx + 1,
+          fileName,
+          fileName.contains(premiumSuffix),
+          fileName.contains(premiumSuffix)
+              ? LessonStatus.payLocked
+              : LessonStatus.locked,
+          null,
+          header,
+          p.setExtension(fileName, '.png'));
+    });
     _currentUser.lessons.addAll(lessons);
     return this;
   }

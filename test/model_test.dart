@@ -30,7 +30,7 @@ void main() {
 
   test('Lesson toJson serialization', () {
     var l = Lesson(1, 'content/lessons/001.md', true, LessonStatus.locked,
-        DateTime.parse('2021-12-01 05:30:01'));
+        DateTime.parse('2021-12-01 05:30:01'), 'Заголовок', 'no image');
 
     var jsonStr = jsonEncode(l.toJson());
 
@@ -79,9 +79,9 @@ void main() {
     var r2 = Review(4, 4, 'content/review/004.json', SRSStatus.guru,
         DateTime.parse('2021-12-11 05:30:01'));
     var l1 = Lesson(1, 'content/lessons/001.md', true, LessonStatus.locked,
-        DateTime.parse('2021-12-01 05:32:01'));
+        DateTime.parse('2021-12-01 05:32:01'), 'Заголовок', 'no image');
     var l2 = Lesson(2, 'content/lessons/002.md', true, LessonStatus.completed,
-        DateTime.parse('2021-12-01 05:31:01'));
+        DateTime.parse('2021-12-01 05:31:01'), 'Заголовок', 'no image');
     var u = User(List<Lesson>.from([l1, l2]), List<Review>.from([r1, r2]),
         PremiumKey("test key", false), Statistics([]));
 

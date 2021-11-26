@@ -44,23 +44,15 @@ class CyberDedHomePage extends StatefulWidget {
   State<CyberDedHomePage> createState() => _CyberDedHomePageState();
 }
 
-enum CyberDedScreen { home, lesson, review, payment }
+enum CyberDedScreen { lesson, review, statistics, payment }
 
 class _CyberDedHomePageState extends State<CyberDedHomePage>
     with WidgetsBindingObserver {
-  CyberDedScreen _selectedIndex = CyberDedScreen.home;
-  String lessonMd = '';
+  CyberDedScreen _selectedIndex = CyberDedScreen.lesson;
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = CyberDedScreen.values[index];
-    });
-  }
-
-  void loadAsset() async {
-    var md = await rootBundle.loadString('content/lessons/001.md');
-    setState(() {
-      lessonMd = md;
     });
   }
 
@@ -73,7 +65,6 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
         await Provider.of<User>(context, listen: false).savePersistent();
       });
     }
-    loadAsset();
   }
 
   @override
@@ -98,16 +89,16 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Главная',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Уроки',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.refresh),
-            label: 'Ревью',
+            label: 'Повторения',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart),
+            label: 'Статистика',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.attach_money),
@@ -127,10 +118,10 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
 
   getCurrentScreen() {
     switch (_selectedIndex) {
-      case CyberDedScreen.home:
+      case CyberDedScreen.statistics:
         return const HomeScreen();
       case CyberDedScreen.lesson:
-        return LessonsScreen(mdContent: lessonMd);
+        return const LessonsScreen();
       case CyberDedScreen.review:
         return const ReviewScreen();
       case CyberDedScreen.payment:

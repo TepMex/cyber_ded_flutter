@@ -20,9 +20,11 @@ class Lesson extends ChangeNotifier {
   bool isPremiumContent;
   LessonStatus status;
   DateTime? completeDate;
+  String title;
+  String imagePath;
 
   Lesson(this.id, this.contentLink, this.isPremiumContent, this.status,
-      this.completeDate);
+      this.completeDate, this.title, this.imagePath);
 
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
 
