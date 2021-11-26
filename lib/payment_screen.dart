@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'models/user.dart';
 
@@ -61,16 +62,29 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       border: OutlineInputBorder(),
                       hintText: 'Введите премиум-ключ сюда'),
                 ),
-                FloatingActionButton.extended(
-                    label: const Text('Проверить'),
-                    onPressed: () {
-                      setState(() {
-                        alreadyChecked = true;
-                        Provider.of<User>(context, listen: false)
-                            .premiumKey
-                            .key = keyEditingController.text;
-                      });
-                    }),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FloatingActionButton.extended(
+                        label: const Text('Проверить'),
+                        onPressed: () {
+                          setState(() {
+                            alreadyChecked = true;
+                            Provider.of<User>(context, listen: false)
+                                .premiumKey
+                                .key = keyEditingController.text;
+                          });
+                        }),
+                    FloatingActionButton.extended(
+                        label: const Text('Купить'),
+                        backgroundColor: Colors.pink,
+                        icon: const Icon(Icons.payment),
+                        onPressed: () {
+                          launch(
+                              'https://cyberded.exaccess.com/digiseller/articles/116699');
+                        }),
+                  ],
+                ),
                 Text(
                   alreadyChecked ? 'Ключ не прошел проверку' : '',
                   style: const TextStyle(color: Colors.red),

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:http/http.dart' as http;
 
 part 'premium_key.g.dart';
 
@@ -30,7 +33,20 @@ class PremiumKey extends ChangeNotifier {
     if (!validationRegex.hasMatch(key!)) {
       return false;
     }
-    // Надо сделать запрос к серверу и проверить валидность
+
+    try {
+      var validationResp = await http.get(Uri.parse(
+          'https://2i2hlfb7a5.execute-api.eu-west-1.amazonaws.com/Prod/?key=${key!}'));
+      var validationStatus = jsonDecode(validationResp.body) as Map;
+      if (validationStatus.isEmpty ||
+          !validationStatus.containsKey('isKeyValid') ||
+          validationStatus['isKeyValid'] != true) {
+        return false;
+      }
+    } catch (err) {
+      debugPrint(err.toString());
+      return false;
+    }
     return true;
   }
 }

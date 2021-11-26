@@ -91,12 +91,12 @@ void main() {
   });
 
   test('Premium key validation', () async {
-    var key1 = PremiumKey("rqPA6iB71QM3uaumRVTn", true);
+    var key1 = PremiumKey("testtesttesttesttes1", false);
     var key2 = PremiumKey("aafasfdafasd", false);
     var key3 = PremiumKey("rqPA6i!71QM3uaumRV_\$", false);
     var key4 = PremiumKey("rqPA 6i B71 uaumRVTn", false);
 
-    expect(await key1.isKeyValid(), true);
+    expect(await key1.isKeyValid(), false);
     expect(await key2.isKeyValid(), false);
     expect(await key3.isKeyValid(), false);
     expect(await key4.isKeyValid(), false);
