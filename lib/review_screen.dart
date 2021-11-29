@@ -1,4 +1,5 @@
 import 'package:cyber_ded_flutter/game_widget.dart';
+import 'package:cyber_ded_flutter/models/lesson.dart';
 import 'package:cyber_ded_flutter/models/review_game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +51,25 @@ class _ReviewScreenState extends State<ReviewScreen> {
           ),
           Consumer<User>(builder: (context, userModel, child) {
             var reviewCount = actualReviews().length;
+            if (reviewCount == 0) {
+              if (userModel.lessons
+                  .where((lesson) => lesson.status == LessonStatus.completed)
+                  .isEmpty) {
+                return const Text('Вы ещё не прошли ни одного урока');
+              }
+              var nextReviews = userModel.reviews
+                  .where((review) => review.nextReviewDate != null)
+                  .map((review) => review.nextReviewDate)
+                  .toList();
+
+              nextReviews.sort();
+              if (nextReviews.isNotEmpty) {
+                var next = nextReviews.first;
+                var diff = next!.difference(DateTime.now());
+                return Text(
+                    'Повторение через ${diff.inDays} дн. ${diff.inHours - diff.inDays * 24} ч.');
+              }
+            }
             return Text('Доступно $reviewCount');
           }),
           const Spacer(flex: 1),
