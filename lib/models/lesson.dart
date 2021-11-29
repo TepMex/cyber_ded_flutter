@@ -34,4 +34,13 @@ class Lesson extends ChangeNotifier {
     status = LessonStatus.completed;
     completeDate = DateTime.now();
   }
+
+  void unlock(bool isValidKeySaved) {
+    if (isValidKeySaved &&
+        (status == LessonStatus.locked || status == LessonStatus.payLocked)) {
+      status = LessonStatus.open;
+    } else if (status == LessonStatus.locked) {
+      status = LessonStatus.open;
+    }
+  }
 }

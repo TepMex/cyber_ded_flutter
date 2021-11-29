@@ -102,8 +102,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
       return true;
     }
 
-    return await Provider.of<User>(context, listen: false)
-        .premiumKey
-        .isKeyValid();
+    return await Provider.of<User>(context, listen: false).userHasPremium();
   }
 }

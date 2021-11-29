@@ -46,4 +46,9 @@ class Review extends ChangeNotifier {
     var gameJson = await rootBundle.loadString(contentLink);
     return ReviewGame.fromJson(jsonDecode(gameJson));
   }
+
+  void unlock() {
+    status = SRSStatus.unlocked;
+    nextReviewDate = DateTime.now();
+  }
 }
