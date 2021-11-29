@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cyber_ded_flutter/models/review_game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 class GameWidget extends StatefulWidget {
   final Function onCompleted;
@@ -65,18 +66,36 @@ class _GameWidgetState extends State<GameWidget> {
   }
 
   Widget gameTitle() {
+    var isLastPassage =
+        _currentPassage!.links.isEmpty && _currentPassage!.result != null;
+    Widget titleIcon = const SizedBox.shrink();
+    var color = Colors.black;
+    if (isLastPassage) {
+      color = _currentPassage!.result! ? Colors.green : Colors.red;
+      titleIcon = _currentPassage!.result!
+          ? Icon(
+              Icons.check,
+              color: color,
+            )
+          : Icon(
+              Icons.close,
+              color: color,
+            );
+    }
     return Expanded(
         flex: 1,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            titleIcon,
             AutoSizeText(
               widget.game.name,
               presetFontSizes: const [30, 24, 16],
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
+                color: color,
               ),
             ),
           ],
