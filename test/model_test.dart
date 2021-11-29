@@ -16,7 +16,9 @@ void main() {
       "contentLink": "content/lessons/001.md",
       "isPremiumContent": false,
       "status": "open",
-      "completeDate": "2021-12-01 05:30:01"
+      "completeDate": "2021-12-01 05:30:01",
+      "title":"Заголовок",
+      "imagePath":"no image"
     }''';
 
     var actual = Lesson.fromJson(jsonDecode(jsonLesson));
@@ -35,7 +37,7 @@ void main() {
     var jsonStr = jsonEncode(l.toJson());
 
     expect(jsonStr,
-        '''{"id":1,"contentLink":"content/lessons/001.md","isPremiumContent":true,"status":"locked","completeDate":"2021-12-01T05:30:01.000"}''');
+        '''{"id":1,"contentLink":"content/lessons/001.md","isPremiumContent":true,"status":"locked","completeDate":"2021-12-01T05:30:01.000","title":"Заголовок","imagePath":"no image"}''');
   });
   test('Review fromJson deserialization', () {
     var jsonReview = '''{
@@ -67,7 +69,7 @@ void main() {
 
   test('User fromJson', () {
     var jsonStr =
-        """{"lessons":[{"id":1,"contentLink":"content/lessons/001.md","isPremiumContent":false,"status":"locked","completeDate":null}],"reviews":[{"id":1,"lessonId":1,"contentLink":"content/reviews/001.json","status":"locked","nextReviewDate":null}],"premiumKey":{"key":null,"isKeyValid":false},"statistics":{"reviewStatistics":[]}}""";
+        """{"lessons":[{"id":1,"contentLink":"content/lessons/001.md","isPremiumContent":false,"status":"locked","completeDate":null,"title":"Заголовок","imagePath":"no image"}],"reviews":[{"id":1,"lessonId":1,"contentLink":"content/reviews/001.json","status":"locked","nextReviewDate":null}],"premiumKey":{"key":null,"isKeyValid":false},"statistics":{"reviewStatistics":[]}}""";
     var u = User.fromJson(jsonDecode(jsonStr));
 
     expect(u.lessons.length, 1);
@@ -87,7 +89,7 @@ void main() {
 
     var jsonStr = jsonEncode(u);
     expect(jsonStr,
-        """{"lessons":[{"id":1,"contentLink":"content/lessons/001.md","isPremiumContent":true,"status":"locked","completeDate":"2021-12-01T05:32:01.000"},{"id":2,"contentLink":"content/lessons/002.md","isPremiumContent":true,"status":"completed","completeDate":"2021-12-01T05:31:01.000"}],"reviews":[{"id":3,"lessonId":4,"contentLink":"content/review/003.json","status":"apprentice","nextReviewDate":"2021-12-21T05:30:01.000"},{"id":4,"lessonId":4,"contentLink":"content/review/004.json","status":"guru","nextReviewDate":"2021-12-11T05:30:01.000"}],"premiumKey":{"key":"test key","isKeyValid":false},"statistics":{"reviewStatistics":[]},"version":"1.3"}""");
+        """{"lessons":[{"id":1,"contentLink":"content/lessons/001.md","isPremiumContent":true,"status":"locked","completeDate":"2021-12-01T05:32:01.000","title":"Заголовок","imagePath":"no image"},{"id":2,"contentLink":"content/lessons/002.md","isPremiumContent":true,"status":"completed","completeDate":"2021-12-01T05:31:01.000","title":"Заголовок","imagePath":"no image"}],"reviews":[{"id":3,"lessonId":4,"contentLink":"content/review/003.json","status":"apprentice","nextReviewDate":"2021-12-21T05:30:01.000"},{"id":4,"lessonId":4,"contentLink":"content/review/004.json","status":"guru","nextReviewDate":"2021-12-11T05:30:01.000"}],"premiumKey":{"key":"test key","isKeyValid":false},"statistics":{"reviewStatistics":[]},"version":"1.10"}""");
   });
 
   test('Premium key validation', () async {
