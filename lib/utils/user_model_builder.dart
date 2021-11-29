@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:collection/collection.dart';
+import 'package:path/path.dart' as p;
 
 import 'package:cyber_ded_flutter/models/review.dart';
 import 'package:cyber_ded_flutter/models/premium_key.dart';
@@ -29,18 +30,29 @@ class UserModelInitializer {
     final manifestJson = await rootBundle.loadString('AssetManifest.json');
     final files = json.decode(manifestJson) as Map;
     final lessonFiles = files.keys
-        .where((key) => key.toString().startsWith('content/lessons'))
+        .where((key) =>
+            key.toString().startsWith('content/lessons') &&
+            key.toString().endsWith('.md'))
         .map((key) => key.toString())
         .toList();
 
-    var lessons = lessonFiles.mapIndexed((idx, fileName) => Lesson(
-        idx + 1,
-        fileName,
-        fileName.contains(premiumSuffix),
-        fileName.contains(premiumSuffix)
-            ? LessonStatus.payLocked
-            : LessonStatus.locked,
-        null));
+    var lessons = lessonFiles.mapIndexed((idx, fileName) {
+      var header = fileName.split('__').elementAt(1);
+      header = p.withoutExtension(header).replaceAll(RegExp(r'_'), ' ');
+      var initialState = idx == 0
+          ? LessonStatus.open
+          : fileName.contains(premiumSuffix)
+              ? LessonStatus.payLocked
+              : LessonStatus.locked;
+      return Lesson(
+          idx + 1,
+          Uri.decodeFull(fileName),
+          fileName.contains(premiumSuffix),
+          initialState,
+          null,
+          header,
+          Uri.decodeFull(p.setExtension(fileName, '.png')));
+    });
     _currentUser.lessons.addAll(lessons);
     return this;
   }
@@ -61,13 +73,13 @@ class UserModelInitializer {
       } else {
         lessonId = -1;
       }
-      var rnd = Random.secure().nextDouble() > 0.5;
       return Review(
-          idx + 1,
-          lessonId,
-          fileName,
-          rnd ? SRSStatus.locked : SRSStatus.unlocked,
-          rnd ? null : DateTime.now().add(const Duration(days: -1)));
+        idx + 1,
+        lessonId,
+        fileName,
+        SRSStatus.locked,
+        null,
+      );
     });
     _currentUser.reviews.addAll(reviews);
     return this;

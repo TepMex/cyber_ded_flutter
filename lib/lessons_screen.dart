@@ -1,10 +1,159 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:provider/provider.dart';
 
-class LessonsScreen extends StatelessWidget {
+import 'models/lesson.dart';
+import 'models/user.dart';
+
+class LessonsScreen extends StatefulWidget {
+  const LessonsScreen({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _LessonScreenState();
+}
+
+class _LessonScreenState extends State<LessonsScreen> {
+  Lesson? _currentLesson;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_currentLesson == null) {
+      return lessonsGrid();
+    }
+
+    return FutureBuilder(
+        future: loadLessonMdContent(_currentLesson!),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.data != null) {
+            return LessonWidget(
+              mdContent: (snapshot.data!) as String,
+              onComplete: onLessonComplete,
+            );
+          }
+          return const CircularProgressIndicator();
+        });
+  }
+
+  Consumer<User> lessonsGrid() {
+    return Consumer<User>(
+      builder: (context, userModel, child) {
+        return GridView.count(
+            crossAxisCount: kIsWeb ? 2 : 1,
+            childAspectRatio: kIsWeb
+                ? MediaQuery.of(context).size.width /
+                    (MediaQuery.of(context).size.height)
+                : MediaQuery.of(context).size.width /
+                    (MediaQuery.of(context).size.height) *
+                    2,
+            children: userModel.lessons.map((lesson) {
+              return GestureDetector(
+                onTap: () {
+                  if (lesson.status != LessonStatus.locked &&
+                      lesson.status != LessonStatus.payLocked) {
+                    setState(() {
+                      _currentLesson = lesson;
+                    });
+                  }
+                },
+                child: Center(
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        lesson.imagePath,
+                        bundle: rootBundle,
+                        width: 512,
+                        height: 320,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                getIconByLessonStatus(lesson),
+                                AutoSizeText(
+                                  Uri.decodeFull(lesson.title),
+                                  presetFontSizes:
+                                      kIsWeb ? [32, 24, 16] : [16, 8],
+                                  softWrap: true,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 4,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Expanded(
+                          child: Divider(
+                        height: 30,
+                        thickness: 5,
+                      )),
+                    ],
+                  ),
+                ),
+              );
+            }).toList());
+      },
+    );
+  }
+
+  Future<String> loadLessonMdContent(Lesson currentLesson) async {
+    var result = await rootBundle.loadString(currentLesson.contentLink);
+    return result;
+  }
+
+  void onLessonComplete() {
+    Provider.of<User>(context, listen: false)
+        .lessonCompleted(_currentLesson!.id);
+    setState(() {
+      _currentLesson = null;
+    });
+  }
+
+  Icon getIconByLessonStatus(Lesson lesson) {
+    switch (lesson.status) {
+      case LessonStatus.payLocked:
+        return const Icon(
+          Icons.monetization_on,
+          color: Colors.red,
+        );
+      case LessonStatus.locked:
+        return const Icon(
+          Icons.lock,
+          color: Colors.red,
+        );
+      case LessonStatus.open:
+        return const Icon(
+          Icons.circle,
+          color: Colors.yellow,
+        );
+      case LessonStatus.completed:
+        return const Icon(
+          Icons.check,
+          color: Colors.green,
+        );
+    }
+  }
+}
+
+class LessonWidget extends StatelessWidget {
   final String mdContent;
-  const LessonsScreen({Key? key, required this.mdContent}) : super(key: key);
+  final Function onComplete;
+
+  const LessonWidget({
+    Key? key,
+    required this.mdContent,
+    required this.onComplete,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +162,26 @@ class LessonsScreen extends StatelessWidget {
         const Spacer(flex: 1),
         Expanded(
           flex: kIsWeb ? 2 : 20,
-          child: Markdown(
-            styleSheet: MarkdownStyleSheet(
-              textScaleFactor: kIsWeb ? 2 : 1.25,
-            ),
-            data: mdContent,
+          child: Column(
+            children: [
+              SizedBox(
+                height:
+                    MediaQuery.of(context).size.height - (kIsWeb ? 150 : 200),
+                child: Markdown(
+                  styleSheet: MarkdownStyleSheet(
+                    textScaleFactor: kIsWeb ? 2 : 1.25,
+                  ),
+                  data: mdContent,
+                ),
+              ),
+              Expanded(
+                child: ElevatedButton(
+                    onPressed: () {
+                      onComplete();
+                    },
+                    child: const Text('Я прочитал')),
+              ),
+            ],
           ),
         ),
         const Spacer(flex: 1),

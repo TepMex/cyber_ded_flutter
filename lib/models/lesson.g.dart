@@ -14,6 +14,8 @@ Lesson _$LessonFromJson(Map<String, dynamic> json) => Lesson(
       json['completeDate'] == null
           ? null
           : DateTime.parse(json['completeDate'] as String),
+      json['title'] as String,
+      json['imagePath'] as String,
     );
 
 Map<String, dynamic> _$LessonToJson(Lesson instance) => <String, dynamic>{
@@ -22,6 +24,8 @@ Map<String, dynamic> _$LessonToJson(Lesson instance) => <String, dynamic>{
       'isPremiumContent': instance.isPremiumContent,
       'status': _$LessonStatusEnumMap[instance.status],
       'completeDate': instance.completeDate?.toIso8601String(),
+      'title': instance.title,
+      'imagePath': instance.imagePath,
     };
 
 const _$LessonStatusEnumMap = {

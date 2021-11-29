@@ -14,7 +14,7 @@ part 'user.g.dart';
 
 const modelName = 'cyber_ded';
 
-const actualVersion = '1.3';
+const actualVersion = '1.10';
 
 @JsonSerializable()
 class User extends ChangeNotifier {
@@ -60,6 +60,11 @@ class User extends ChangeNotifier {
 
   void lessonCompleted(int id) {
     lessons.firstWhere((lesson) => lesson.id == id).complete();
+    _unlockReviews(id);
+    var nextLesson = lessons.where((lesson) => lesson.id == id + 1);
+    if (nextLesson.isNotEmpty) {
+      nextLesson.elementAt(0).unlock(premiumKey.isValidKeySaved);
+    }
     notifyListeners();
   }
 
@@ -69,7 +74,39 @@ class User extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> userHasPremium() async {
+    var result = await premiumKey.isKeyValid();
+    if (result) {
+      _unlockPayLockedLessons();
+    }
+
+    return result;
+  }
+
   static bool checkVersion(String jsonModel) {
     return jsonDecode(jsonModel)['version'] == actualVersion;
+  }
+
+  void _unlockPayLockedLessons() {
+    lessons
+        .where((lesson) => lesson.status == LessonStatus.payLocked)
+        .toList()
+        .asMap()
+        .forEach((idx, lesson) {
+      if (idx == 0) {
+        lesson.status = LessonStatus.open;
+      } else {
+        lesson.status = LessonStatus.locked;
+      }
+    });
+  }
+
+  void _unlockReviews(int lessonId) {
+    reviews
+        .where((review) => review.lessonId == lessonId)
+        .where((review) => review.status == SRSStatus.locked)
+        .forEach((review) {
+      review.unlock();
+    });
   }
 }
