@@ -120,6 +120,7 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
       case CyberDedScreen.statistics:
         return const HomeScreen();
       case CyberDedScreen.lesson:
+        // TODO: Переписать всё на чистую архитектуру с BLoC
         return LessonsScreen(
           payLockedContentPressed: () {
             setState(() {

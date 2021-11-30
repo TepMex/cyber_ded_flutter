@@ -103,10 +103,11 @@ class _LessonScreenState extends State<LessonsScreen> {
                                 AutoSizeText(
                                   Uri.decodeFull(lesson.title),
                                   presetFontSizes:
-                                      kIsWeb ? [32, 24, 16] : [16, 8],
+                                      kIsWeb ? [32, 24, 16] : [12, 8],
                                   softWrap: true,
                                   textAlign: TextAlign.center,
                                   maxLines: 4,
+                                  wrapWords: true,
                                 ),
                               ],
                             ),
