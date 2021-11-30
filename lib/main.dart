@@ -120,7 +120,13 @@ class _CyberDedHomePageState extends State<CyberDedHomePage>
       case CyberDedScreen.statistics:
         return const HomeScreen();
       case CyberDedScreen.lesson:
-        return const LessonsScreen();
+        return LessonsScreen(
+          payLockedContentPressed: () {
+            setState(() {
+              _selectedIndex = CyberDedScreen.payment;
+            });
+          },
+        );
       case CyberDedScreen.review:
         return const ReviewScreen();
       case CyberDedScreen.payment:

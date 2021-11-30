@@ -11,7 +11,9 @@ import 'models/lesson.dart';
 import 'models/user.dart';
 
 class LessonsScreen extends StatefulWidget {
-  const LessonsScreen({Key? key}) : super(key: key);
+  final Function? payLockedContentPressed;
+  const LessonsScreen({Key? key, required this.payLockedContentPressed})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _LessonScreenState();
@@ -59,6 +61,9 @@ class _LessonScreenState extends State<LessonsScreen> {
                     setState(() {
                       _currentLesson = lesson;
                     });
+                  } else if (lesson.status == LessonStatus.payLocked &&
+                      widget.payLockedContentPressed != null) {
+                    widget.payLockedContentPressed!();
                   }
                 },
                 child: Center(
