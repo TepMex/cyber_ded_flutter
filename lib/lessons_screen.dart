@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
+import 'dart:math' as math;
 
 import 'models/lesson.dart';
 import 'models/user.dart';
@@ -63,12 +64,27 @@ class _LessonScreenState extends State<LessonsScreen> {
                 child: Center(
                   child: Column(
                     children: [
-                      Image.asset(
-                        lesson.imagePath,
-                        bundle: rootBundle,
-                        width: 512,
-                        height: 320,
-                      ),
+                      Stack(alignment: AlignmentDirectional.center, children: [
+                        Transform.rotate(
+                          angle: 30 * math.pi / 360,
+                          child: AutoSizeText(
+                            lesson.status == LessonStatus.payLocked
+                                ? 'платный контент'
+                                : '',
+                            presetFontSizes: const [30, 24, 16, 8],
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Image.asset(
+                          lesson.imagePath,
+                          bundle: rootBundle,
+                          opacity: lesson.status == LessonStatus.payLocked
+                              ? const AlwaysStoppedAnimation<double>(0.5)
+                              : null,
+                          width: 512,
+                          height: 320,
+                        ),
+                      ]),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
