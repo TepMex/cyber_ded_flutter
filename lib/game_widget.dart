@@ -4,7 +4,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cyber_ded_flutter/models/review_game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 
 class GameWidget extends StatefulWidget {
   final Function onCompleted;
