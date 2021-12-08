@@ -43,12 +43,14 @@ class _ReviewScreenState extends State<ReviewScreen> {
       child: Column(
         children: [
           const Spacer(flex: 1),
-          FloatingActionButton.extended(
-            label: const Text('Начать повторения'),
-            onPressed: () {
-              _initGameSession();
-            },
-          ),
+          actualReviews().isNotEmpty
+              ? FloatingActionButton.extended(
+                  label: const Text('Начать повторения'),
+                  onPressed: () {
+                    _initGameSession();
+                  },
+                )
+              : const SizedBox.shrink(),
           Consumer<User>(builder: (context, userModel, child) {
             var reviewCount = actualReviews().length;
             if (reviewCount == 0) {
