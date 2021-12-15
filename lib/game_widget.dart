@@ -27,7 +27,6 @@ class _GameWidgetState extends State<GameWidget> {
   @override
   void dispose() {
     super.dispose();
-    debugPrint('game disposed');
   }
 
   @override

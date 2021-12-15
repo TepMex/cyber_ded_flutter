@@ -24,15 +24,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('rebuild: ' +
-        _currentReview.hashCode.toString() +
-        ',' +
-        _currentGame.hashCode.toString());
     if (_isGameRunning) {
       if (_currentGame != null && _currentReview != null && !_isGameLoading) {
         return gameWidget(_currentGame!);
       }
-      debugPrint('circle');
       return const CircularProgressIndicator();
     }
     return initialWidget();
@@ -132,8 +127,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
       _currentGame = nextGame;
       _isGameLoading = false;
     });
-
-    debugPrint('nextGame completed');
   }
 
   void _showResults() {}
