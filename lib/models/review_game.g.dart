@@ -10,14 +10,14 @@ ReviewGamePassageLink _$ReviewGamePassageLinkFromJson(
         Map<String, dynamic> json) =>
     ReviewGamePassageLink(
       json['pid'] as String,
-      json['link'] as String,
+      json['name'] as String,
     );
 
 Map<String, dynamic> _$ReviewGamePassageLinkToJson(
         ReviewGamePassageLink instance) =>
     <String, dynamic>{
       'pid': instance.refPid,
-      'link': instance.linkText,
+      'name': instance.linkText,
     };
 
 ReviewGamePassage _$ReviewGamePassageFromJson(Map<String, dynamic> json) =>
