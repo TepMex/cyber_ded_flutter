@@ -7,7 +7,7 @@ class ReviewGamePassageLink {
   @JsonKey(name: 'pid')
   String refPid;
 
-  @JsonKey(name: 'link')
+  @JsonKey(name: 'name')
   String linkText;
 
   ReviewGamePassageLink(this.refPid, this.linkText);
